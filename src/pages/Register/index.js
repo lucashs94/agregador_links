@@ -1,19 +1,20 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Logo } from '../../components/Logo'
 import { Input } from '../../components/Input'
 
 import { toast } from 'react-toastify'
-import './login.css'
+import './register.css'
 
 import { useAuth } from '../../contexts/auth'
 
+export default function Register(){
 
-export default function Login(){
+    const { cadastrar, loadingAuth } = useAuth()
+    const navigate = useNavigate()
 
-    const { logar, loadingAuth } = useAuth()
-
+    const[nome, setNome] = useState('')
     const[email, setEmail] = useState('')
     const[senha, setSenha] = useState('')
 
@@ -26,16 +27,28 @@ export default function Login(){
             return
         }
 
-        await logar(email, senha)
+        await cadastrar(email, senha, nome)
+
+        setNome("")
+        setEmail("")
+        setSenha("")
+
     }
 
 
     return(
         <div className='login-container'>
             <Logo/>
-            <h2 className='title'>Login</h2>
+
+            <h2 className='title'>Cadastre-se</h2>
 
             <form className='form' onSubmit={ handleLogin }>
+                <Input
+                    type='text'
+                    placeholder='Digite seu nome'
+                    value={nome}
+                    onChange={ (e) => setNome(e.target.value) }
+                />
                 <Input
                     type='email'
                     placeholder='email@email.com'
@@ -51,10 +64,10 @@ export default function Login(){
                 />
                 
                 <button type='submit'>
-                    {loadingAuth ? 'Carregando...' :  "Acessar"}
+                    {loadingAuth ? 'Carregando...' : "Cadastrar" }
                 </button>
-
-                <Link to="/register">Não tem conta? Cadastre-se aqui</Link>
+                
+                <Link to="/">Já tem conta? Faça Login</Link>
             </form>
 
         </div>

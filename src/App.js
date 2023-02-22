@@ -1,35 +1,20 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
+import RoutesApp from './routes';
 
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Admin from './pages/Admin'
-import Error from './pages/Error'
-import Networks from './pages/Networks'
+import AuthProvider from './contexts/auth';
 
-import Private from './routes/Private'
+export default function App() {
+  return (
+    <div className="App">
+      <BrowserRouter>
+        <AuthProvider>
+          <RoutesApp/>
+        </AuthProvider>
+      </BrowserRouter>
+    </div>
+  );
+}
 
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Home/>
-  },
-  {
-    path: '/login',
-    element: <Login/>
-  },
-  {
-    path: '/admin',
-    element: <Private> <Admin/> </Private>
-  },
-  {
-      path: '/admin/social',
-      element: <Private> <Networks/> </Private>
-  },
-  {
-    path: '*',
-    element: <Error/>
-  }
-])
-
-export { router }
+// TODO: Pagina de Perfil (manter email, pedir slug)
+// TODO: Página com links em "dominio/escolha" do usuario

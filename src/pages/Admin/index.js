@@ -11,8 +11,11 @@ import { db } from '../../services/firebaseConnection'
 import { addDoc, collection, onSnapshot, query, orderBy, doc, deleteDoc } from 'firebase/firestore'
 
 import { toast } from 'react-toastify'
+import { useAuth } from '../../contexts/auth'
 
 export default function Admin(){
+
+    const { user } = useAuth()
 
     const [nameInput, setNameInput] = useState('')
     const [urlInput, setUrlInput] = useState('')
@@ -23,7 +26,7 @@ export default function Admin(){
 
     useEffect( () => {
 
-        const linksRef = collection(db, "links")
+        const linksRef = collection(db, `users/${user.uid}/links`)
         const queryRef = query(linksRef, orderBy('created', 'asc'))
 
         onSnapshot(queryRef, (snapshot) => {
@@ -53,7 +56,7 @@ export default function Admin(){
             return
         }
 
-        addDoc(collection(db, 'links'), {
+        addDoc(collection(db, `users/${user.uid}/links`), {
             name: nameInput,
             url: urlInput,
             bg: backgroundColorInput,
@@ -73,7 +76,7 @@ export default function Admin(){
 
 
     async function handleDeleteLink(id){
-        const docRef = doc(db, "links", id)
+        const docRef = doc(db, `users/${user.uid}/links/${id}`)
         await deleteDoc(docRef)
     }
 
@@ -133,7 +136,6 @@ export default function Admin(){
                 </button>
 
             </form>
-
 
 
             <h2 className='title'>
