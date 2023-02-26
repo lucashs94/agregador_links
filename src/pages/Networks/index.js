@@ -1,30 +1,34 @@
 import { useState, useEffect } from 'react'
 
-import './networks.css'
+import { useAuth } from '../../contexts/auth'
 
 import { Header }  from '../../components/Header'
 import { Input }  from '../../components/Input'
 import { MdAddLink } from 'react-icons/md'
 
 import { db } from '../../services/firebaseConnection'
-import { setDoc, doc, getDoc } from 'firebase/firestore'
+import { setDoc, doc, getDoc, collection, addDoc } from 'firebase/firestore'
 
 import { toast } from 'react-toastify'
+import './networks.css'
 
 
 export default function Networks(){
+
+    const { user } = useAuth()
 
     const [facebook, setFacebook] = useState("")
     const [youtube, setYoutube] = useState("")
     const [instagram, setInstagram] = useState("")
 
+
     useEffect( () => {
 
-        function loadLinks(){
-            const docRef = doc(db, 'social', 'link')
-            getDoc(docRef)
+        async function loadLinks(){
+            const docRef = doc(db, `users/${user.uid}/social/${user.uid}`)
+            
+            await getDoc(docRef)
             .then( (snapshot) => {
-
                 if(snapshot.data() !== undefined){
                     setFacebook(snapshot.data().facebook)
                     setYoutube(snapshot.data().youtube)
@@ -32,14 +36,15 @@ export default function Networks(){
                 }
             } )
         }
-        
         loadLinks()
     }, [] )
 
-    function handleSave(e){
-        e.preventDefault()
 
-        setDoc(doc(db, 'social', 'link'), {
+    async function handleSave(e){
+        e.preventDefault()
+        const docRef = doc(db, `users/${user.uid}/social/${user.uid}`)
+
+        await setDoc(docRef, {
             facebook: facebook,
             youtube: youtube,
             instagram: instagram
@@ -51,6 +56,8 @@ export default function Networks(){
             toast.error('Não foi possivel salvar suas URLs')
         })
     }
+
+
 
     return(
 

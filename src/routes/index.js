@@ -6,6 +6,7 @@ import Register from '../pages/Register'
 import Admin from '../pages/Admin'
 import Error from '../pages/Error'
 import Networks from '../pages/Networks'
+import Settings from "../pages/Settings"
 
 import Private from "./Private"
 
@@ -16,7 +17,7 @@ export default function RoutesApp(){
 
             <Route path='/register'         element={ <Register/> }/>
 
-            <Route path='/settings'         element={ <Private> <Admin/> </Private> }/>
+            <Route path='/settings'         element={ <Private> <Settings/> </Private> }/>
             <Route path='/admin'            element={ <Private> <Admin/> </Private> }/>
             <Route path='/admin/social'     element={ <Private> <Networks/> </Private> }/>
             

@@ -14,7 +14,3 @@ export default function App() {
     </div>
   );
 }
-
-
-// TODO: Pagina de Perfil (manter email, pedir slug)
-// TODO: Página com links em "dominio/escolha" do usuario

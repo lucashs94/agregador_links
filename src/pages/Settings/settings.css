@@ -1,0 +1,23 @@
+form .label{
+    margin-bottom: 5px;
+}
+
+form span{
+    color: #FFF;
+    font-size: 12px;
+    margin-top: -10px;
+}
+
+form input::placeholder{
+    color: #BBB;
+}
+
+
+.title-social{
+    color: #fff;
+    margin-top: 50px;
+}
+
+.btn-register{
+    margin-top: 24px;
+}

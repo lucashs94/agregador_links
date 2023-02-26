@@ -8,7 +8,7 @@ import { MdAddLink } from 'react-icons/md'
 import { FiTrash2 } from 'react-icons/fi'
 
 import { db } from '../../services/firebaseConnection'
-import { addDoc, collection, onSnapshot, query, orderBy, doc, deleteDoc } from 'firebase/firestore'
+import { addDoc, collection, onSnapshot, query, orderBy, doc, deleteDoc, getDoc, setDoc } from 'firebase/firestore'
 
 import { toast } from 'react-toastify'
 import { useAuth } from '../../contexts/auth'
@@ -17,11 +17,12 @@ export default function Admin(){
 
     const { user } = useAuth()
 
+    const [slug, setSlug] = useState('')
     const [nameInput, setNameInput] = useState('')
     const [urlInput, setUrlInput] = useState('')
     const [backgroundColorInput, setBackgroundColorInput] = useState('#cccccc')
     const [textColorInput, setTextColorInput] = useState('#ffffff')
-
+    
     const [links, setLinks] = useState([])
 
     useEffect( () => {
@@ -45,25 +46,47 @@ export default function Admin(){
             setLinks(lista)
         })
 
+        getDoc(doc(db, `users/${user.uid}`))
+        .then( (snapshot) => {
+            let vSlug = snapshot.data().slug
+            setSlug(vSlug)
+        })
+
     }, [] )
 
 
     async function handleRegister(e){
         e.preventDefault()
 
+        if(slug === ''){
+            toast.warn('Preencha todos os campos...')
+            return
+        }
+        
         if(nameInput === '' || urlInput === ''){
             toast.warn('Preencha todos os campos...')
             return
         }
 
-        addDoc(collection(db, `users/${user.uid}/links`), {
+
+        await addDoc(collection(db, `users/${user.uid}/links`), {
             name: nameInput,
             url: urlInput,
             bg: backgroundColorInput,
             color: textColorInput,
             created: new Date(),
         })
-        .then(()=>{
+        .then((value)=>{
+            setDoc(doc(db, `publico/${slug}/links/${value.id}`), {
+                name: nameInput,
+                url: urlInput,
+                bg: backgroundColorInput,
+                color: textColorInput,
+                created: new Date(),
+            }).then(() => {
+                console.log(`Publico atualizado!`)
+            })
+
             setNameInput("")
             setUrlInput("")
             console.log('Cadastrado com Sucesso!!')
@@ -77,13 +100,16 @@ export default function Admin(){
 
     async function handleDeleteLink(id){
         const docRef = doc(db, `users/${user.uid}/links/${id}`)
+        const docRefPublico = doc(db, `publico/${slug}/links/${id}`)
+        
         await deleteDoc(docRef)
+        await deleteDoc(docRefPublico)
     }
 
 
     return(
         <div className='admin-container'>
-            <Header/>
+            <Header slug={slug}/>
             <Logo/>
 
             <form className='form' onSubmit={ handleRegister }>

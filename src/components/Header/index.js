@@ -6,10 +6,10 @@ import { useAuth } from '../../contexts/auth'
 
 
 
-export function Header(){
+export function Header({ slug }){
      
     const navigate = useNavigate()
-     const { logout } = useAuth()
+    const { logout } = useAuth()
 
 
     async function handleLogout(){
@@ -24,14 +24,20 @@ export function Header(){
                     <BiLogOut size={28} color='#DB2629' />
                 </button>
 
-                <Link to='/admin'>
+                <Link to='/settings'>
                     Meu Perfil
                 </Link>
+                
                 <Link to='/admin'>
-                    Links
+                    Configuração
                 </Link>
+                
                 <Link to='/admin/social'>
                     Redes Sociais
+                </Link>
+                
+                <Link to={'/' + localStorage.getItem('@s')}>
+                    LinksMe
                 </Link>
 
             </nav>

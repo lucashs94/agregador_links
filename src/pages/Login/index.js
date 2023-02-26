@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 
 import { Logo } from '../../components/Logo'
 import { Input } from '../../components/Input'
@@ -12,10 +12,15 @@ import { useAuth } from '../../contexts/auth'
 
 export default function Login(){
 
-    const { logar, loadingAuth } = useAuth()
+    const { signed, logar, loadingAuth } = useAuth()
 
     const[email, setEmail] = useState('')
     const[senha, setSenha] = useState('')
+
+    
+    if(signed){
+        return <Navigate to='/admin' /> 
+    }
 
 
     async function handleLogin(e){

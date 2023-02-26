@@ -19,6 +19,7 @@ export default function AuthProvider({ children }){
     const [loadingAuth, setLoadingAuth] = useState(false)
     const [loading, setLoading] = useState(true)
 
+    
     useEffect(() => {
 
         async function loadUser(){
@@ -27,14 +28,14 @@ export default function AuthProvider({ children }){
             if(storageUser){
                 setUser(JSON.parse(storageUser))
                 setLoading(false)
-                navigate('/admin')
             }
             setLoading(false)
         }
 
+        setInterval(verificaExpires(15), 1000 * 60 * 3 )
+
         loadUser()
     }, [])
-
 
 
     async function logar(email, password){
@@ -61,6 +62,8 @@ export default function AuthProvider({ children }){
                 setUser(data)
                 setLocalStorage(data)
                 setLoadingAuth(false)
+
+                localStorage.setItem('@t', JSON.stringify(new Date().getTime()))        // Salva o TIME para "login expiration"
                 navigate("/admin")
             })
             
@@ -86,6 +89,7 @@ export default function AuthProvider({ children }){
                 created: new Date(),
                 createdFormat: format( new Date(), 'dd/MM/yyyy'),
                 email: email,
+                slug: '',
             })
             .then(() => {
                 
@@ -103,6 +107,7 @@ export default function AuthProvider({ children }){
                     pauseOnHover: false,
                 })
 
+                localStorage.setItem('@t', JSON.stringify(new Date().getTime()))        // Salva o TIME para "login expiration"
                 navigate('/admin', { replace: true })
             })
         })
@@ -115,7 +120,7 @@ export default function AuthProvider({ children }){
 
     async function logout(){
         await signOut(auth)
-        localStorage.removeItem('@user')
+        localStorage.clear() 
         setUser(null)
     }
 
@@ -123,6 +128,15 @@ export default function AuthProvider({ children }){
         localStorage.setItem('@user', JSON.stringify(data))
     }
 
+    function verificaExpires(expires){
+        let timeLogin = JSON.parse(localStorage.getItem('@t'))
+        let timeLoginAfter = timeLogin + (1000 * 60 * expires)
+        let timeNow = new Date().getTime() + 1000
+        
+        if(timeLoginAfter < timeNow){
+            logout()
+        }
+    }
 
 
     return(

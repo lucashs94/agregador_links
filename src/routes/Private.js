@@ -12,7 +12,6 @@ export default function Private({ children }){
     }
     
     if(!signed){
-        console.log('nao estou logado')
         return <Navigate to='/' /> 
     }
 

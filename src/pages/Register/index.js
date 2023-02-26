@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, Navigate } from 'react-router-dom'
 
 import { Logo } from '../../components/Logo'
 import { Input } from '../../components/Input'
@@ -11,13 +11,17 @@ import { useAuth } from '../../contexts/auth'
 
 export default function Register(){
 
-    const { cadastrar, loadingAuth } = useAuth()
+    const { signed, cadastrar, loadingAuth } = useAuth()
     const navigate = useNavigate()
 
     const[nome, setNome] = useState('')
     const[email, setEmail] = useState('')
     const[senha, setSenha] = useState('')
 
+
+    if(signed){
+        return <Navigate to='/admin' /> 
+    }
 
     async function handleLogin(e){
         e.preventDefault()

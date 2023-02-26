@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import './home.css'
+import { useParams } from 'react-router-dom'
 
 import { Social } from '../../components/Social'
 import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa'
@@ -7,8 +7,11 @@ import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa'
 import { getDocs, collection, orderBy, query, doc, getDoc } from 'firebase/firestore'
 import { db } from '../../services/firebaseConnection'
 
+import './home.css'
 
 export default function Home(){
+
+    const { slug } = useParams()
 
     const [links, setLinks] = useState([])
     const [socialLinks, setSocialLinks] = useState({})
@@ -17,7 +20,7 @@ export default function Home(){
 
         function loadLinks(){
 
-            const linksRef = collection(db, 'links')
+            const linksRef = collection(db, `publico/${slug}/links`)
             const queryRef = query(linksRef, orderBy('created', 'asc'))
 
             getDocs(queryRef)
